@@ -116,19 +116,24 @@ public class DataflowList {
 	 * @return
 	 */
 	private static Map<Integer, Set<Integer>> getConflictFlowId(Map<String, Set<Integer>> pathAndFlowId,int flowNum) {
-		Map<Integer, Set<Integer>> conflictMap = new HashMap<>();		
+		Map<Integer, Set<Integer>> idAndConflictId = new HashMap<>();		
 		Set<String> pathSet = pathAndFlowId.keySet();
         for (Iterator<String> iterator = pathSet.iterator(); iterator.hasNext();) {  
         	String perPath = iterator.next();
             Set<Integer> flowId = pathAndFlowId.get(perPath);
             for (Integer id : flowId) {
-            	if (!conflictMap.containsKey(id)) {
-					conflictMap.put(id, flowId);
+            	if (!idAndConflictId.containsKey(id)) {
+            		idAndConflictId.put(id, flowId);
 				}else{
-					conflictMap.get(id).addAll(flowId);
+					idAndConflictId.get(id).addAll(flowId);
 				}
             }
+
         }		
-		return conflictMap;
+        // remove the conflict id of the key. example: id 0's conflict id set can not include id 0;
+        for (Integer id : idAndConflictId.keySet()) {
+			idAndConflictId.get(id).remove(id);
+		}
+		return idAndConflictId;
 	}	
 }

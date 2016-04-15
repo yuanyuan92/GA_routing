@@ -1,5 +1,6 @@
 package gaStrategy;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,21 +18,84 @@ import gaElements.Individual;
  */
 public class Fitness {
     //we supposed that the flow runtime cannot larger than the period
-    public static int overlap (Individual individual , DataflowList dataflowList) {
+    public static Individual getAllScore (Individual individual , DataflowList dataflowList) {
+    	Map<Integer, Set<Integer>> 	id2ConfilctId 	= dataflowList.getid2ConfilctId();
+    	Map<Integer, Integer> 		phaseMap 		= individual.phaseMap;
+    	Map<Integer, Set<Integer>> 	chromosome		= phase2Chromo(phaseMap, dataflowList);
+    	
+    	
+    	Map<Integer,Map<Integer, Integer>> overlapFlows = individual.overlapFlows;
+        
+    	for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
+        	Integer key = iterator.next();
+        	//get the current time's flow set
+            Set<Integer> phaseSet = chromosome.get(key);
+			if (!phaseSet.isEmpty()) {
+			//get confict flow
+				for (Integer id : phaseSet) {
+					Set<Integer> conflictSet = id2ConfilctId.get(id);
+					// the flow has conflict set
+					if (!conflictSet.isEmpty()) {
+						for (Integer conflictId : phaseSet) {
+
+							if (conflictSet.contains(conflictId)) {
+								// overlapFlows : flowId - conflictId- conflictTimes
+								if (!overlapFlows.containsKey(id)) {
+									// overlapFlows does not have this flowId,
+									// then new the id , conflict id and conflict times
+									Map<Integer, Integer> conflictIdAndTimes = new HashMap<>();
+									conflictIdAndTimes.put(conflictId, 1);
+									overlapFlows.put(id, conflictIdAndTimes);
+								}else {
+									// overlapFlows has the flow id but does not have this conflict id, 
+									// then put the conflict id and initial times
+									if (!overlapFlows.get(id).containsKey(conflictId)) {
+										Map<Integer, Integer> teMap = overlapFlows.get(id);
+										teMap.put(conflictId, 1);
+										overlapFlows.put(id, teMap);
+										overlapFlows.get(id);
+									}else{
+										// overlapFlows has the flow id and the conflict id, then add the times
+										int times = overlapFlows.get(id).get(conflictId) + 1;
+										overlapFlows.get(id).put(conflictId, times);										
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+        int totalTimes = 0;
+        Set<Integer> conflictFlow = new HashSet<>();
+        for (Integer flowId : overlapFlows.keySet()) {
+        	conflictFlow.add(flowId);
+			for (Integer conflictTimes : overlapFlows.get(flowId).keySet()) {
+				totalTimes += conflictTimes;
+			}
+		}
+        individual.overlapFlow = conflictFlow.size();
+        individual.overlapCost = totalTimes;
+        System.err.println(overlapFlows);
+        return individual;
+	}
+	
+    //we supposed that the flow runtime cannot larger than the period
+    private static int overlap (Individual individual , DataflowList dataflowList) {
     	int score = 0;
     	Map<Integer, Set<Integer>> 	conflictTable 	= dataflowList.getid2ConfilctId();
     	Map<Integer, Integer> 		phaseMap 		= individual.phaseMap;
     	Map<Integer, Set<Integer>> 	chromosome		= phase2Chromo(phaseMap, dataflowList);
         for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
-        	Integer key = iterator.next();
-            Set<Integer> phaseSet = chromosome.get(key);
-			if (phaseSet.size() > 1) {
-				for (Integer flow : phaseSet) {
-					Set<Integer> conflict = conflictTable.get(flow);
-					if (!conflict.isEmpty()) {
-						conflict.remove(flow);
-						for (Integer id : phaseSet) {
-							if (conflict.contains(id)) {
+        	Integer slot = iterator.next();
+        	//get the current time's flow set
+            Set<Integer> phaseSet = chromosome.get(slot);
+			if (!phaseSet.isEmpty()) {
+				for (Integer id : phaseSet) {
+					Set<Integer> conflictSet = conflictTable.get(id);
+					if (!conflictSet.isEmpty()) {
+						for (Integer conflictId : phaseSet) {
+							if (conflictSet.contains(conflictId)) {
 								score++;
 							}
 						}

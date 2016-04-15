@@ -12,11 +12,12 @@ public class Individual implements Comparable<Individual>{
 	public double score = 0;
 	public int energyCost = 0;
 	public int overlapCost = 0;
-	public Map<Integer, Map<Integer, Integer>> overlapFlow = new HashMap<>();
-	public Map<Integer ,Set<Integer>>  chromosome = new HashMap<>();
-	public Map<Integer ,Integer>  phaseMap = new HashMap<>();
-	public int geneLength = 0;
 	public double varCost = 0;	
+	public int overlapFlow = 0;
+	public Map<Integer, Map<Integer, Integer>> 	overlapFlows = new HashMap<>();
+	public Map<Integer ,Set<Integer>>			chromosome = new HashMap<>();
+	public Map<Integer ,Integer> 	 			phaseMap = new HashMap<>();
+	public int geneLength = 0;
 	/**
 	 * 
 	 */
@@ -34,8 +35,8 @@ public class Individual implements Comparable<Individual>{
 			this.geneLength = (int) (hyperPeriod/runTimeUnit);
 			for (Dataflow dataflow : dataflows) {
 				Integer id = dataflow.flowId;
-				long runTime	= (dataflow.getRunTime() / runTimeUnit);
-				long period		= (dataflow.getPeriod() / runTimeUnit);
+				long runTime	= (dataflow.getRunTime()	/ runTimeUnit);
+				long period		= (dataflow.getPeriod() 	/ runTimeUnit);
 				//deadline constrain and runtime supposed to be less than period
 				long phase = (long) ((period - runTime + 1) * Math.random());
 				phaseMap.put(id, (int)phase);
@@ -58,9 +59,5 @@ public class Individual implements Comparable<Individual>{
 	@Override
 	public int compareTo(Individual individual) {
 		return score > individual.score ? 1 : (score < individual.score ? -1 : 0);
-	}
-	public int getOverlapCost() {
-		return overlapCost;
-	}
-	
+	}	
 }

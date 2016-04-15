@@ -40,12 +40,9 @@ public class Evolution {
 	
 	public static void mark(List<Individual> individuals, DataflowList dataflowList) {
 		for (Individual individual : individuals) {
-			int overlap = Fitness.overlap(individual, dataflowList);
-			int energy 	= Fitness.energyCost(individual, dataflowList);
-			int score = overlap + 0 * energy;
-			individual.score = (score);
-			individual.energyCost = (energy);
-			individual.overlapCost = (overlap);
+			individual = Fitness.getAllScore(individual, dataflowList);
+			individual.score = individual.overlapFlow;
+
 		}
 		//sort for minimum overlap
 	}

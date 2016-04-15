@@ -16,11 +16,11 @@ public class test {
 	 */
 	public static void main(String[] args) {
 		int ary = 7;
-		int flowNum = 25;
+		int flowNum = 50;
 		int maxPeriod = 10;
 		int payloadPercent = 0;	//payload is the percentage from 0 to 100
-		int scale = 500;
-		int evolutionTimes = 500;
+		int scale = 1;
+		int evolutionTimes = 1;
 		//----------------------------------------------------------------------------------------------
 		DataflowList dataflowList = new DataflowList(ary, flowNum, maxPeriod, payloadPercent);
 		List<Individual> rank = new ArrayList<>();
@@ -32,7 +32,7 @@ public class test {
 			Evolution evolution = new Evolution(next, dataflowList);
 			next = evolution.newGeneration(next, dataflowList);
 			Individual good = next.individuals.get(0);
-			if (good.getOverlapCost()==0) {
+			if (good.overlapCost==0) {
 				System.err.println(good);
 				feasible.add(good.toString());
 			}else {
