@@ -11,23 +11,7 @@ public class Dataflow {
 	private long runTime;
 	private long deadline;
 	private List<Integer> routeNode;
-	/**
-	 * 
-	 */
-//	public Dataflow(int ary) {
-//		super();
-//		int nodeNum = (int) Math.pow(ary, 2);
-//		//起止点不能一样
-//		do {
-//			source = (int) (Math.random()*nodeNum);
-//			dst = (int) (Math.random()*nodeNum);
-//		} while (source==dst);
-//		//周期设为1、2、4
-//		period = (int) (Math.pow(2, (int)(Math.random()* 5)));//period baseline
-//		runTime= (int) (Math.random()*period)/4+1;//supposed can not be zero and utilization lower than 25%
-//		setDeadline(period - runTime);
-//		routeNode = XYRouting.getRouteNode(source, dst, ary);
-//	}
+
 	public Dataflow(int ary, int maxPeriod, int payloadPercent) {
 		super();
 		int nodeNum = (int) Math.pow(ary, 2);
