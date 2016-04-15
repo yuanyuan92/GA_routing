@@ -3,14 +3,14 @@ package ga;
 public class Util {
 	// great common division
     public static long gcd(long m, long n) {  
-        if (m < n) {// ï¿½ï¿½Ö¤m>n,ï¿½ï¿½m<n,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½  
+        if (m < n) {// ±£Ö¤m>n,Èôm<n,Ôò½øÐÐÊý¾Ý½»»»  
             long temp = m;  
             m = n;  
             n = temp;  
         }  
-        if (m % n == 0) {// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª0,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½  
+        if (m % n == 0) {// ÈôÓàÊýÎª0,·µ»Ø×î´ó¹«Ô¼Êý  
             return n;  
-        } else { // ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ÐµÝ¹ï¿½,ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½m,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n  
+        } else { // ·ñÔò,½øÐÐµÝ¹é,°Ñn¸³¸øm,°ÑÓàÊý¸³¸øn  
             return gcd(n, m % n);  
         }  
     }
@@ -23,7 +23,7 @@ public class Util {
 	
 	
 	public static boolean getPosibility( int scale , int idx) {
-		// individual is good enough ? the better individual has more possibility to crossover
+		// individual is good enough ? the better individual has more posibility to crossover
 		double propablity = ((double)scale - idx) / scale;
 		if (Math.random() < propablity) {
 			return true;

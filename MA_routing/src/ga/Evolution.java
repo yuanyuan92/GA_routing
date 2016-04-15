@@ -36,7 +36,12 @@ public class Evolution {
 	
 	public static void mark(List<Individual> individuals, DataflowList dataflowList) {
 		for (Individual individual : individuals) {
-			individual.setScore(Fitness.overlap(individual, dataflowList));
+			int overlap = Fitness.overlap(individual, dataflowList);
+			int energy 	= Fitness.energyCost(individual, dataflowList);
+			int score = overlap + 0 * energy;
+			individual.setScore(score);
+			individual.setEnergyCost(energy);
+			individual.setOverlapCost(overlap);
 		}
 		//sort for minimum overlap
 	}
@@ -91,15 +96,13 @@ public class Evolution {
 			if (Math.random() <= percnt) {
 				int flowNum = dataflows.size();
 				Map<Integer, Integer> phaseMap = individual.getPhaseMap();
-				// select the mutation gene : only one flow is mutated
-				// set the posibility to mutation
+				// select the mutation gene
 				int mutationGene =  (int) (Math.random() * flowNum);
 				int mutationLocation = phaseMap.get(mutationGene);
 				// remove the current gene for mutation
 				phaseMap.remove(mutationGene);
 				// mutation strategy
 				long deadline = dataflows.get(mutationGene).getDeadline();
-				// reason
 				int newLocation =  (int) ((mutationLocation + Math.random() * deadline) % deadline);
 				phaseMap.put(mutationGene, newLocation);
 				individual.setPhaseMap(phaseMap);

@@ -11,7 +11,7 @@ import ga.Population;
 
 public class test {
 	/**
-	 * @flowNum ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+	 * @flowNum ÍøÂçÖÐÊý¾ÝÁ÷µÄÊýÁ¿ 
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -19,30 +19,31 @@ public class test {
 		int flowNum = 25;
 		int maxPeriod = 10;
 		int payloadPercent = 0;	//payload is the percentage from 0 to 100
-		int scale = 100;
-		int evolutionTimes = 200;
+		int scale = 500;
+		int evolutionTimes = 500;
 		//----------------------------------------------------------------------------------------------
 		DataflowList dataflowList = new DataflowList(ary, flowNum, maxPeriod, payloadPercent);
 		List<Individual> rank = new ArrayList<>();
-//		System.out.println(dataflowList);
+		List<String> feasible = new ArrayList<>();
+		
 		Population population = new Population(scale, dataflowList);
 		Population next = population;
-		Individual best = new Individual();
-		best.setScore(10000);
 		for (int i = 0; i < evolutionTimes; i++) {
 			Evolution evolution = new Evolution(next, dataflowList);
 			next = evolution.newGeneration(next, dataflowList);
-			rank.add(next.individuals.get(0));
-			if (next.individuals.get(0).getScore()==0) {
-				System.out.println("*************");
-				System.out.println(next.individuals.get(0));
-				break;
+			Individual good = next.getIndividuals().get(0);
+			if (good.getOverlapCost()==0) {
+				System.err.println(good);
+				feasible.add(good.toString());
+			}else {
+				System.out.println(i+"\t"+good);
 			}
-			System.out.println(next.individuals.get(0));
 		}
+		
 		System.out.println(dataflowList);
-//		for (Individual individual : rank) {
-//			System.out.println(individual);
-//		}
+		System.err.println("---------feasible list--------------");
+		for (String individual : feasible) {
+			System.out.println(individual);
+		}
 	}
 }

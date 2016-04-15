@@ -9,17 +9,15 @@ import boardAndFlow.Dataflow;
 import boardAndFlow.DataflowList;
 
 public class Individual implements Comparable<Individual>{
+	private double score = 0;
+	private int energyCost = 0;
+	private int overlapCost = 0;
 	private Map<Integer ,Set<Integer>>  chromosome = new HashMap<>();
 	private Map<Integer ,Integer>  phaseMap = new HashMap<>();
 	@SuppressWarnings("unused")
 	private int geneLength = 0;
-	private double score = 0;
 	@SuppressWarnings("unused")
 	private double varCost = 0;	
-	private int overlapCost = 0;
-	private int energyCost = 0;
-	
-	
 	/**
 	 * 
 	 */
@@ -46,6 +44,9 @@ public class Individual implements Comparable<Individual>{
 		}
 
 
+	public void setOverlapCost(int overlapCost) {
+		this.overlapCost = overlapCost;
+	}
 	public Map<Integer, Set<Integer>> getChromosome() {
 		return chromosome;
 	}
@@ -82,7 +83,8 @@ public class Individual implements Comparable<Individual>{
 
 	@Override
 	public String toString() {
-		return "Individual [phaseMap=" + phaseMap + ", score=" + score + "]";
+		return "Individual [score=" + score + ", energyCost=" + energyCost + ", overlapCost=" + overlapCost
+				+ ", phaseMap=" + phaseMap + "]";
 	}
 	public String showChromo() {
 		return "Individual [Chromo=" + chromosome;
@@ -93,7 +95,10 @@ public class Individual implements Comparable<Individual>{
 	}
 	@Override
 	public int compareTo(Individual individual) {
-		return overlapCost > individual.score ? 1 : (score < individual.score ? -1 : 0);
+		return score > individual.score ? 1 : (score < individual.score ? -1 : 0);
+	}
+	public int getOverlapCost() {
+		return overlapCost;
 	}
 	
 }

@@ -38,26 +38,13 @@ public class Fitness {
 				}
 			}
 		}
-        individual.setChromosome(chromosome);
 		return score;
 	}
     
     //the utilization of NOC need to be minimum
-    public static int energyCost(Individual individual) {
-		int score = 0;
-		Map<Integer, Set<Integer>> chromosome = individual.getChromosome();
-		for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {
-			Integer key = iterator.next();
-			if (!chromosome.get(key).isEmpty()) {
-				score++;
-			}
-			
-		}
-//		for (Set<String> string : chromosome.keySet()) {
-//			if (string!=null) {
-//				score++;
-//			}
-//		}
+    public static int energyCost(Individual individual, DataflowList dataflowList) {
+    	individual.setChromosome(phase2Chromo(individual.getPhaseMap(), dataflowList));
+		int score = individual.getChromosome().size();
     	return score;
 	}
     
@@ -103,7 +90,7 @@ public class Fitness {
 				for (int j = 0; j < runTime; j++) {
 					int cur = i * period + phase + j;
 					if (!chromosome.containsKey(cur)) {
-						chromosome.put(cur, new HashSet<Integer>());
+						chromosome.put(cur, new HashSet<>());
 					}
 					chromosome.get(cur).add(id);
 				}
