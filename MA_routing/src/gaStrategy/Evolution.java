@@ -34,7 +34,7 @@ public class Evolution {
 		mark(nextGeneration.individuals,dataflowList);
 		Collections.sort(nextGeneration.individuals);
 		// select scale
-		nextGeneration.individuals = (select(nextGeneration.individuals, oldGeneration.getScale()));
+		nextGeneration.individuals = (select(nextGeneration.individuals, oldGeneration.scale));
 		return nextGeneration;
 	}
 	

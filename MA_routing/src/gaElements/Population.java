@@ -12,9 +12,6 @@ public class Population {
 	public int scale;
 	public List<Individual> individuals;
 
-	public int getScale() {
-		return scale;
-	}
 	/**
 	 * @param scale
 	 */

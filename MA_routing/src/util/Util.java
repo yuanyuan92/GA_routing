@@ -19,16 +19,4 @@ public class Util {
     public static long lcm(long m, long n) {  
         return m * n / gcd(m, n);  
     }
-
-	
-	
-	public static boolean getPosibility( int scale , int idx) {
-		// individual is good enough ? the better individual has more posibility to crossover
-		double propablity = ((double)scale - idx) / scale;
-		if (Math.random() < propablity) {
-			return true;
-		}else {
-			return false;
-		}		
-	}
 }
