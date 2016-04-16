@@ -19,8 +19,8 @@ public class test {
 		int flowNum = 50;
 		int maxPeriod = 10;
 		int payloadPercent = 0;	//payload is the percentage from 0 to 100
-		int scale = 1;
-		int evolutionTimes = 1;
+		int scale = 500;
+		int evolutionTimes = 100;
 		//----------------------------------------------------------------------------------------------
 		DataflowList dataflowList = new DataflowList(ary, flowNum, maxPeriod, payloadPercent);
 		List<Individual> rank = new ArrayList<>();
@@ -41,7 +41,7 @@ public class test {
 		}
 		
 		System.out.println(dataflowList);
-		System.err.println("---------feasible list--------------");
+		System.out.println("---------feasible list--------------");
 		for (String individual : feasible) {
 			System.out.println(individual);
 		}

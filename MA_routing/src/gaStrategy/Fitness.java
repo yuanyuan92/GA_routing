@@ -22,89 +22,79 @@ public class Fitness {
     	Map<Integer, Set<Integer>> 	id2ConfilctId 	= dataflowList.getid2ConfilctId();
     	Map<Integer, Integer> 		phaseMap 		= individual.phaseMap;
     	Map<Integer, Set<Integer>> 	chromosome		= phase2Chromo(phaseMap, dataflowList);
-    	
-    	
-    	Map<Integer,Map<Integer, Integer>> overlapFlows = individual.overlapFlows;
-        
-    	for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
-        	Integer key = iterator.next();
-        	//get the current time's flow set
-            Set<Integer> phaseSet = chromosome.get(key);
-			if (!phaseSet.isEmpty()) {
-			//get confict flow
-				for (Integer id : phaseSet) {
-					Set<Integer> conflictSet = id2ConfilctId.get(id);
-					// the flow has conflict set
-					if (!conflictSet.isEmpty()) {
-						for (Integer conflictId : phaseSet) {
-
-							if (conflictSet.contains(conflictId)) {
-								// overlapFlows : flowId - conflictId- conflictTimes
-								if (!overlapFlows.containsKey(id)) {
-									// overlapFlows does not have this flowId,
-									// then new the id , conflict id and conflict times
-									Map<Integer, Integer> conflictIdAndTimes = new HashMap<>();
-									conflictIdAndTimes.put(conflictId, 1);
-									overlapFlows.put(id, conflictIdAndTimes);
-								}else {
-									// overlapFlows has the flow id but does not have this conflict id, 
-									// then put the conflict id and initial times
-									if (!overlapFlows.get(id).containsKey(conflictId)) {
-										Map<Integer, Integer> teMap = overlapFlows.get(id);
-										teMap.put(conflictId, 1);
-										overlapFlows.put(id, teMap);
-										overlapFlows.get(id);
-									}else{
-										// overlapFlows has the flow id and the conflict id, then add the times
-										int times = overlapFlows.get(id).get(conflictId) + 1;
-										overlapFlows.get(id).put(conflictId, times);										
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-        int totalTimes = 0;
-        Set<Integer> conflictFlow = new HashSet<>();
-        for (Integer flowId : overlapFlows.keySet()) {
-        	conflictFlow.add(flowId);
-			for (Integer conflictTimes : overlapFlows.get(flowId).keySet()) {
-				totalTimes += conflictTimes;
-			}
-		}
-        individual.overlapFlow = conflictFlow.size();
-        individual.overlapCost = totalTimes;
-        System.err.println(overlapFlows);
-        return individual;
-	}
-	
-    //we supposed that the flow runtime cannot larger than the period
-    private static int overlap (Individual individual , DataflowList dataflowList) {
+    	Map<Integer, Map<Integer, Integer>> overlapInfo = new HashMap<>();
     	int score = 0;
-    	Map<Integer, Set<Integer>> 	conflictTable 	= dataflowList.getid2ConfilctId();
-    	Map<Integer, Integer> 		phaseMap 		= individual.phaseMap;
-    	Map<Integer, Set<Integer>> 	chromosome		= phase2Chromo(phaseMap, dataflowList);
-        for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
+    	for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
         	Integer slot = iterator.next();
         	//get the current time's flow set
             Set<Integer> phaseSet = chromosome.get(slot);
 			if (!phaseSet.isEmpty()) {
+			//get confict flow
 				for (Integer id : phaseSet) {
-					Set<Integer> conflictSet = conflictTable.get(id);
+					Set<Integer> conflictSet = id2ConfilctId.get(id);
+					// if the flow has conflict set
 					if (!conflictSet.isEmpty()) {
-						for (Integer conflictId : phaseSet) {
-							if (conflictSet.contains(conflictId)) {
+						for (Integer coexistId : phaseSet) {
+							// for every coexist id if coexist id is the conflict id
+							if (conflictSet.contains(coexistId)) {
 								score++;
+								// if overlap info do not include the flow id, then add the id and go through
+								if (!overlapInfo.containsKey(id)) {
+									overlapInfo.put(id, new HashMap<>());
+								}
+								// if this overlap id map do not include this conflict id, then add the conflict and go through
+								if (!overlapInfo.get(id).containsKey(coexistId)) {
+									overlapInfo.get(id).put(coexistId, 1);
+								}else{
+									int times = overlapInfo.get(id).get(coexistId);
+									overlapInfo.get(id).put(coexistId, times+1);
+								}
 							}
 						}
+						
 					}
 				}
 			}
 		}
-		return score;
+    	int overlapFlowNum = overlapInfo.size();
+    	int overlapTimes = 0;
+    	for (Integer id : overlapInfo.keySet()) {
+			Map<Integer, Integer> conflictIdAndTimes = overlapInfo.get(id);
+			for (Integer conflictId : conflictIdAndTimes.keySet()) {
+				overlapTimes += conflictIdAndTimes.get(conflictId);
+			}
+		}
+    	individual.score = score;
+    	individual.overlapFlow = overlapFlowNum;
+    	individual.overlapCost = overlapTimes;
+        return individual;
 	}
+	
+    //we supposed that the flow runtime cannot larger than the period
+//    private static int overlap (Individual individual , DataflowList dataflowList) {
+//    	int score = 0;
+//    	Map<Integer, Set<Integer>> 	conflictTable 	= dataflowList.getid2ConfilctId();
+//    	Map<Integer, Integer> 		phaseMap 		= individual.phaseMap;
+//    	Map<Integer, Set<Integer>> 	chromosome		= phase2Chromo(phaseMap, dataflowList);
+//        for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
+//        	Integer slot = iterator.next();
+//        	//get the current time's flow set
+//            Set<Integer> phaseSet = chromosome.get(slot);
+//			if (!phaseSet.isEmpty()) {
+//				for (Integer id : phaseSet) {
+//					Set<Integer> conflictSet = conflictTable.get(id);
+//					if (!conflictSet.isEmpty()) {
+//						for (Integer conflictId : phaseSet) {
+//							if (conflictSet.contains(conflictId)) {
+//								score++;
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return score;
+//	}
     
     //the utilization of NOC need to be minimum
     public static int energyCost(Individual individual, DataflowList dataflowList) {

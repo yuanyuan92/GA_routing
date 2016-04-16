@@ -12,9 +12,8 @@ public class Individual implements Comparable<Individual>{
 	public double score = 0;
 	public int energyCost = 0;
 	public int overlapCost = 0;
-	public double varCost = 0;	
 	public int overlapFlow = 0;
-	public Map<Integer, Map<Integer, Integer>> 	overlapFlows = new HashMap<>();
+	public double varCost = 0;	
 	public Map<Integer ,Set<Integer>>			chromosome = new HashMap<>();
 	public Map<Integer ,Integer> 	 			phaseMap = new HashMap<>();
 	public int geneLength = 0;
@@ -47,7 +46,7 @@ public class Individual implements Comparable<Individual>{
 	@Override
 	public String toString() {
 		return "Individual [score=" + score + ", energyCost=" + energyCost + ", overlapCost=" + overlapCost
-				+ ", phaseMap=" + phaseMap + "]";
+				+ ", overlapFlow=" + overlapFlow + "]";
 	}
 	public String showChromo() {
 		return "Individual [Chromo=" + chromosome;
