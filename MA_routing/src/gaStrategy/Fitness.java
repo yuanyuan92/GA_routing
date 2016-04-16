@@ -27,14 +27,14 @@ public class Fitness {
     	for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
         	Integer slot = iterator.next();
         	//get the current time's flow set
-            Set<Integer> phaseSet = chromosome.get(slot);
-			if (!phaseSet.isEmpty()) {
+            Set<Integer> slotSet = chromosome.get(slot);
+			if (!slotSet.isEmpty()) {
 			//get confict flow
-				for (Integer id : phaseSet) {
+				for (Integer id : slotSet) {
 					Set<Integer> conflictSet = id2ConfilctId.get(id);
 					// if the flow has conflict set
 					if (!conflictSet.isEmpty()) {
-						for (Integer coexistId : phaseSet) {
+						for (Integer coexistId : slotSet) {
 							// for every coexist id if coexist id is the conflict id
 							if (conflictSet.contains(coexistId)) {
 								score++;
@@ -79,12 +79,12 @@ public class Fitness {
 //        for (Iterator<Integer> iterator = chromosome.keySet().iterator(); iterator.hasNext();) {  
 //        	Integer slot = iterator.next();
 //        	//get the current time's flow set
-//            Set<Integer> phaseSet = chromosome.get(slot);
-//			if (!phaseSet.isEmpty()) {
-//				for (Integer id : phaseSet) {
+//            Set<Integer> slotSet = chromosome.get(slot);
+//			if (!slotSet.isEmpty()) {
+//				for (Integer id : slotSet) {
 //					Set<Integer> conflictSet = conflictTable.get(id);
 //					if (!conflictSet.isEmpty()) {
-//						for (Integer conflictId : phaseSet) {
+//						for (Integer conflictId : slotSet) {
 //							if (conflictSet.contains(conflictId)) {
 //								score++;
 //							}
